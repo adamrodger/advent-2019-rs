@@ -1,13 +1,18 @@
-pub fn part1(input: &str) -> u32 {
-    let modules = input.lines().map(|l| l.parse::<u32>().unwrap());
-    modules.map(|n| (n / 3) - 2).sum()
+#[aoc_generator(day1)]
+pub fn input_generator(input: &str) -> Vec<i32> {
+    input.lines().map(|l| l.parse().unwrap()).collect()
 }
 
-pub fn part2(input: &str) -> i32 {
-    let modules = input.lines().map(|l| l.parse::<i32>().unwrap());
+#[aoc(day1, part1)]
+pub fn part1(input: &[i32]) -> i32 {
+    input.iter().map(|n| (n / 3) - 2).sum()
+}
+
+#[aoc(day1, part2)]
+pub fn part2(input: &[i32]) -> i32 {
     let mut total = 0;
 
-    for module in modules {
+    for module in input.iter() {
         let mut fuel = (module / 3) - 2;
 
         while fuel > 0 {
@@ -21,15 +26,17 @@ pub fn part2(input: &str) -> i32 {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
     fn part1() {
-        let input = include_str!("../inputs/day01.txt");
-        assert_eq!(super::part1(&input), 3305301);
+        let input = include_str!("../input/2019/day1.txt");
+        assert_eq!(super::part1(&input_generator(&input)), 3305301);
     }
 
     #[test]
     fn part2() {
-        let input = include_str!("../inputs/day01.txt");
-        assert_eq!(super::part2(&input), 4955106);
+        let input = include_str!("../input/2019/day1.txt");
+        assert_eq!(super::part2(&input_generator(&input)), 4955106);
     }
 }

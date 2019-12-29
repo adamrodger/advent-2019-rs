@@ -1,8 +1,7 @@
-mod day01;
+extern crate advent2019;
+extern crate aoc_runner_derive;
+extern crate aoc_runner;
 
-fn main() {
-    let contents = include_str!("../inputs/day01.txt");
+use aoc_runner_derive::aoc_main;
 
-    println!("Day 1 - Part 1 - {}", day01::part1(&contents));
-    println!("Day 1 - Part 2 - {}", day01::part2(&contents));
-}
+aoc_main! { lib = advent2019 }
