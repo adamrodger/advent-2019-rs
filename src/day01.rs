@@ -28,15 +28,15 @@ pub fn part2(input: &[i32]) -> i32 {
 mod tests {
     use super::*;
 
+    const INPUT: &str = include_str!("../input/2019/day1.txt");
+
     #[test]
-    fn part1() {
-        let input = include_str!("../input/2019/day1.txt");
-        assert_eq!(super::part1(&input_generator(&input)), 3305301);
+    fn day01_part1() {
+        assert_eq!(part1(&input_generator(INPUT)), 3305301);
     }
 
     #[test]
-    fn part2() {
-        let input = include_str!("../input/2019/day1.txt");
-        assert_eq!(super::part2(&input_generator(&input)), 4955106);
+    fn day01_part2() {
+        assert_eq!(part2(&input_generator(INPUT)), 4955106);
     }
 }
