@@ -1,14 +1,16 @@
 const INPUT: &str = include_str!("../input/2019/day1.txt");
 
-pub fn input_generator() -> Vec<i32> {
+pub fn parse_input() -> Vec<i32> {
     INPUT.lines().map(|l| l.parse().unwrap()).collect()
 }
 
-pub fn part1(input: &[i32]) -> i32 {
+pub fn part1() -> i32 {
+    let input = parse_input();
     input.iter().map(|n| (n / 3) - 2).sum()
 }
 
-pub fn part2(input: &[i32]) -> i32 {
+pub fn part2() -> i32 {
+    let input = parse_input();
     let mut total = 0;
 
     for module in input.iter() {
@@ -29,11 +31,11 @@ mod tests {
 
     #[test]
     fn day01_part1() {
-        assert_eq!(part1(&input_generator()), 3305301);
+        assert_eq!(part1(), 3305301);
     }
 
     #[test]
     fn day01_part2() {
-        assert_eq!(part2(&input_generator()), 4955106);
+        assert_eq!(part2(), 4955106);
     }
 }
