@@ -1,8 +1,10 @@
+#[derive(Debug)]
 pub enum StepResult {
     Continue,
     Halted
 }
 
+#[derive(Debug)]
 pub struct IntCodeEmulator {
     ram: Vec<i64>,
     pointer: usize,
@@ -44,6 +46,7 @@ impl IntCodeEmulator {
     }
 }
 
+#[derive(Debug)]
 enum Instruction {
     Add(InputValue, InputValue, OutputValue),
     Multiply(InputValue, InputValue, OutputValue),
@@ -56,14 +59,14 @@ impl Instruction {
 
         let instruction = match opcode {
             1 => Instruction::Add(
-                InputValue::new(pointer + 1),
-                InputValue::new(pointer + 2),
-                OutputValue::new(pointer + 3),
+                InputValue::new(program[pointer + 1]),
+                InputValue::new(program[pointer + 2]),
+                OutputValue::new(program[pointer + 3]),
             ),
             2 => Instruction::Multiply(
-                InputValue::new(pointer + 1),
-                InputValue::new(pointer + 2),
-                OutputValue::new(pointer + 3),
+                InputValue::new(program[pointer + 1]),
+                InputValue::new(program[pointer + 2]),
+                OutputValue::new(program[pointer + 3]),
             ),
             99 => Instruction::Halt,
             _ => panic!("Unknown opcode {} at pointer {}", opcode, pointer)
@@ -73,26 +76,32 @@ impl Instruction {
     }
 }
 
-struct InputValue(usize);
+#[derive(Debug)]
+struct InputValue {
+    position: usize
+}
 
 impl InputValue {
-    fn new(position: usize) -> InputValue {
-        InputValue(position)
+    fn new(position: i64) -> InputValue {
+        InputValue { position: position as usize }
     }
 
     fn read(&self, program: &Vec<i64>) -> i64 {
-        program[self.0]
+        program[self.position]
     }
 }
 
-struct OutputValue(usize);
+#[derive(Debug)]
+struct OutputValue {
+    position: usize
+}
 
 impl OutputValue {
-    fn new(position: usize) -> OutputValue {
-        OutputValue(position)
+    fn new(position: i64) -> OutputValue {
+        OutputValue { position: position as usize }
     }
 
     fn write(&self, program: &mut Vec<i64>, value: i64) {
-        program[self.0] = value;
+        program[self.position] = value;
     }
 }
