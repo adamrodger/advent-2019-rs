@@ -1,7 +1,12 @@
-extern crate advent2019;
-extern crate aoc_runner_derive;
-extern crate aoc_runner;
+mod day01;
+mod day02;
 
-use aoc_runner_derive::aoc_main;
+mod intcode;
 
-aoc_main! { lib = advent2019 }
+pub fn main() {
+    println!("Day 01 - Part 1 - {}", day01::part1());
+    println!("Day 01 - Part 2 - {}", day01::part2());
+
+    println!("Day 02 - Part 1 - {}", day02::part1());
+    println!("Day 02 - Part 2 - {}", day02::part2());
+}
