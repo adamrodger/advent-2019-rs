@@ -3,6 +3,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 
 mod intcode;
 mod points;
@@ -22,4 +23,7 @@ pub fn main() {
 
     println!("Day 05 - Part 1 - {}", day05::part1());
     println!("Day 05 - Part 2 - {}", day05::part2());
+
+    println!("Day 06 - Part 1 - {}", day06::part1());
+    println!("Day 06 - Part 2 - {}", day06::part2());
 }
