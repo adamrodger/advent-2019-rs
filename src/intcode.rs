@@ -79,6 +79,28 @@ impl IntCodeEmulator {
                 self.stdout.push_back(src.read(program));
             },
 
+            Instruction::JumpTrue(condition, dest) => {
+                if condition.read(program) != 0 {
+                    self.pointer = dest.read(program) as usize;
+                    return StepResult::Continue;
+                }
+            },
+
+            Instruction::JumpFalse(condition, dest) => {
+                if condition.read(program) == 0 {
+                    self.pointer = dest.read(program) as usize;
+                    return StepResult::Continue;
+                }
+            },
+
+            Instruction::LessThan(left, right, dest) => {
+                dest.write(program, if left.read(program) < right.read(program) { 1 } else { 0 });
+            },
+
+            Instruction::Equals(left, right, dest) => {
+                dest.write(program, if left.read(program) == right.read(program) { 1 } else { 0 });
+            },
+
             Instruction::Halt => return StepResult::Halted
         }
 
@@ -93,6 +115,10 @@ enum Instruction {
     Multiply(ReadValue, ReadValue, WriteValue),
     Input(WriteValue),
     Output(ReadValue),
+    JumpTrue(ReadValue, ReadValue),
+    JumpFalse(ReadValue, ReadValue),
+    LessThan(ReadValue, ReadValue, WriteValue),
+    Equals(ReadValue, ReadValue, WriteValue),
     Halt
 }
 
@@ -121,6 +147,24 @@ impl Instruction {
             4 => Instruction::Output(
                 ReadValue::new(program[pointer + 1], mode1)
             ),
+            5 => Instruction::JumpTrue(
+                ReadValue::new(program[pointer + 1], mode1),
+                ReadValue::new(program[pointer + 2], mode2)
+            ),
+            6 => Instruction::JumpFalse(
+                ReadValue::new(program[pointer + 1], mode1),
+                ReadValue::new(program[pointer + 2], mode2)
+            ),
+            7 => Instruction::LessThan(
+                ReadValue::new(program[pointer + 1], mode1),
+                ReadValue::new(program[pointer + 2], mode2),
+                WriteValue::new(program[pointer + 3]),
+            ),
+            8 => Instruction::Equals(
+                ReadValue::new(program[pointer + 1], mode1),
+                ReadValue::new(program[pointer + 2], mode2),
+                WriteValue::new(program[pointer + 3]),
+            ),
             99 => Instruction::Halt,
             _ => panic!("Unknown opcode {} at pointer {}", opcode, pointer)
         };
@@ -130,11 +174,15 @@ impl Instruction {
 
     fn steps(&self) -> usize {
         match self {
-            Instruction::Add(_,_,_) => 4,
-            Instruction::Multiply(_,_,_) => 4,
-            Instruction::Input(_) => 2,
-            Instruction::Output(_) => 2,
-            Instruction::Halt => 0
+            Instruction::Add(..)       => 4,
+            Instruction::Multiply(..)  => 4,
+            Instruction::Input(..)     => 2,
+            Instruction::Output(..)    => 2,
+            Instruction::JumpTrue(..)  => 3,
+            Instruction::JumpFalse(..) => 3,
+            Instruction::LessThan(..)  => 4,
+            Instruction::Equals(..)    => 4,
+            Instruction::Halt          => 0
         }
     }
 }
@@ -189,7 +237,7 @@ impl From<i64> for ParameterMode {
         match v {
             0 => ParameterMode::Position,
             1 => ParameterMode::Immediate,
-            _ => panic!("Unsupported parameter mode")
+            _ => panic!(format!("Unsupported parameter mode {}", v))
         }
     }
 }

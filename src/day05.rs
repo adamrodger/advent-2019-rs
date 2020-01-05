@@ -13,7 +13,13 @@ pub fn part1() -> i64 {
 }
 
 pub fn part2() -> i64 {
-    0
+    let mut vm = IntCodeEmulator::from_input(INPUT);
+    vm.stdin().push_back(5);
+
+    vm.execute();
+
+    let result = vm.stdout().iter().last().expect("Expected output but received none");
+    *result
 }
 
 #[cfg(test)]
