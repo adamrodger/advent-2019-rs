@@ -1,8 +1,14 @@
 use std::collections::VecDeque;
 
 #[derive(Debug)]
-pub enum StepResult {
+enum StepResult {
     Continue,
+    InputRequired,
+    Halted
+}
+
+#[derive(Debug)]
+pub enum YieldReason {
     InputRequired,
     Halted
 }
@@ -16,11 +22,6 @@ pub struct IntCodeEmulator {
 }
 
 impl IntCodeEmulator {
-    pub fn from_input(input: &str) -> IntCodeEmulator {
-        let program = input.trim().split(',').map(|l| l.parse().expect("Unable to parse input")).collect();
-        IntCodeEmulator::new(program)
-    }
-
     pub fn new(program: Vec<i64>) -> IntCodeEmulator {
         IntCodeEmulator {
             ram: program,
@@ -28,6 +29,15 @@ impl IntCodeEmulator {
             stdin: VecDeque::new(),
             stdout: VecDeque::new(),
         }
+    }
+
+    pub fn from_input(input: &str) -> IntCodeEmulator {
+        let program = IntCodeEmulator::parse_input(input);
+        IntCodeEmulator::new(program)
+    }
+
+    pub fn parse_input(input: &str) -> Vec<i64> {
+        input.trim().split(',').map(|l| l.parse().expect("Unable to parse input")).collect()
     }
 
     pub fn ram(&self) -> &Vec<i64> {
@@ -48,6 +58,16 @@ impl IntCodeEmulator {
                 StepResult::Continue => continue,
                 StepResult::InputRequired => panic!("Input required but none received"),
                 StepResult::Halted => break
+            }
+        }
+    }
+
+    pub fn execute_until_yield(&mut self) -> YieldReason {
+        loop {
+            match self.step() {
+                StepResult::Continue => continue,
+                StepResult::InputRequired => return YieldReason::InputRequired,
+                StepResult::Halted => return YieldReason::Halted
             }
         }
     }
