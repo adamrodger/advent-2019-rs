@@ -7,7 +7,7 @@ enum StepResult {
     Halted
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum YieldReason {
     InputRequired,
     Halted
