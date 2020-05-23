@@ -22,7 +22,7 @@ pub fn part2() -> i64 {
         for verb in 0..=99 {
             let output = run(&input, noun, verb);
 
-            if output == 19690720 {
+            if output == 19_690_720 {
                 return 100 * noun + verb;
             }
         }
@@ -31,16 +31,15 @@ pub fn part2() -> i64 {
     panic!("Correct noun/verb combo not found");
 }
 
-fn run(input: &Vec<i64>, noun: i64, verb: i64) -> i64 {
-    let mut program = input.clone();
+fn run(input: &[i64], noun: i64, verb: i64) -> i64 {
+    let mut program = input.to_vec();
     program[1] = noun;
     program[2] = verb;
 
     let mut vm = IntCodeEmulator::new(program);
     vm.execute();
 
-    let result = vm.ram()[0];
-    result
+    vm.ram()[0]
 }
 
 #[cfg(test)]

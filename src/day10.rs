@@ -29,7 +29,6 @@ pub fn part2() -> i32 {
     let vectors: HashMap<u64, Vec<&Point2D>> = asteroids
         .iter()
         .map(|asteroid| (vector(&base, asteroid), asteroid))
-        .into_iter()
         .into_group_map();
 
     let mut destroyed = HashSet::with_capacity(200);
@@ -39,10 +38,10 @@ pub fn part2() -> i32 {
         let remaining: Vec<&Point2D> = vectors[vector]
             .iter()
             .filter(|&asteroid| !destroyed.contains(asteroid))
-            .map(|x| *x)
+            .copied()
             .collect();
 
-        if remaining.len() == 0 {
+        if remaining.is_empty() {
             continue;
         }
 

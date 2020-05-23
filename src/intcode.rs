@@ -175,14 +175,14 @@ enum Instruction {
 }
 
 impl Instruction {
-    fn parse(program: &Vec<i64>, pointer: usize) -> Instruction {
+    fn parse(program: &[i64], pointer: usize) -> Instruction {
         let opcode = program[pointer];
 
         let mode1 = (opcode / 100) % 10;
         let mode2 = (opcode / 1000) % 10;
         let mode3 = (opcode / 10000) % 10;
 
-        let instruction = match opcode % 100 {
+        match opcode % 100 {
             1 => Instruction::Add(
                 ReadValue::new(program[pointer + 1], mode1),
                 ReadValue::new(program[pointer + 2], mode2),
@@ -216,9 +216,7 @@ impl Instruction {
             9 => Instruction::AdjustBase(ReadValue::new(program[pointer + 1], mode1)),
             99 => Instruction::Halt,
             _ => panic!("Unknown opcode {} at pointer {}", opcode, pointer),
-        };
-
-        instruction
+        }
     }
 
     fn steps(&self) -> usize {
@@ -254,7 +252,7 @@ impl ReadValue {
         }
     }
 
-    fn read(&self, program: &Vec<i64>, base: i64) -> i64 {
+    fn read(&self, program: &[i64], base: i64) -> i64 {
         let position = match *self {
             ReadValue::Position(position) => position as usize,
             ReadValue::Relative(position) => (position + base) as usize,

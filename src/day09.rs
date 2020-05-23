@@ -12,8 +12,7 @@ pub fn part1() -> i64 {
         panic!("Failed with output: {:?}", vm.stdout());
     }
 
-    let result = vm.stdout().pop_back().expect("No output produced");
-    result
+    vm.stdout().pop_back().expect("No output produced")
 }
 
 pub fn part2() -> i64 {
@@ -22,8 +21,7 @@ pub fn part2() -> i64 {
 
     vm.execute();
 
-    let result = vm.stdout().pop_back().expect("No output produced");
-    result
+    vm.stdout().pop_back().expect("No output produced")
 }
 
 #[cfg(test)]

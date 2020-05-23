@@ -34,7 +34,7 @@ pub fn part2() -> usize {
 
     let intersections: HashSet<&&Point2D> = locations_one.intersection(&locations_two).collect();
 
-    let closest = intersections
+    intersections
         .iter()
         .map(|i| {
             wire_one.iter().position(|x| x == **i).unwrap()
@@ -43,8 +43,7 @@ pub fn part2() -> usize {
                 + 1
         })
         .min()
-        .expect("No intersections found");
-    closest
+        .expect("No intersections found")
 }
 
 fn parse_input() -> Vec<Path> {
@@ -59,13 +58,13 @@ impl FromStr for Path {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let moves = s.split(',').map(|m| m.parse::<Move>().unwrap()).collect();
+        let moves: Vec<_> = s.split(',').map(|m| m.parse::<Move>().unwrap()).collect();
         Ok(Path::new(&moves))
     }
 }
 
 impl Path {
-    fn new(moves: &Vec<Move>) -> Path {
+    fn new(moves: &[Move]) -> Path {
         let mut locations = Vec::new();
         let mut current = Point2D::zero();
 

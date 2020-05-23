@@ -1,16 +1,16 @@
-const START: u32 = 347312;
-const END: u32 = 805915 + 1; // +1 so we can use exclusive ranges which are much more performant
+const START: u32 = 347_312;
+const END: u32 = 805_915 + 1; // +1 so we can use exclusive ranges which are much more performant
 
 pub fn part1() -> usize {
     (START..END)
-        .map(|n| digits(n))
+        .map(digits)
         .filter(|digits| is_in_order(digits) && has_multiple(digits))
         .count()
 }
 
 pub fn part2() -> usize {
     (START..END)
-        .map(|n| digits(n))
+        .map(digits)
         .filter(|digits| is_in_order(digits) && has_double(digits))
         .count()
 }

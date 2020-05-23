@@ -8,46 +8,42 @@ pub fn part1() -> i64 {
     let program = IntCodeEmulator::parse_input(INPUT);
     let permutations = (0..5).permutations(5);
 
-    let max = permutations
+    permutations
         .map(|p| run_in_series(&program, &p))
         .max()
-        .expect("Unable to run IntCode VMs");
-
-    max
+        .expect("Unable to run IntCode VMs")
 }
 
 pub fn part2() -> i64 {
     let program = IntCodeEmulator::parse_input(INPUT);
     let permutations = (5..10).permutations(5);
-    let max = permutations
+
+    permutations
         .map(|p| run_feedback_loop(&program, &p))
         .max()
-        .expect("Unable to run IntCode VMs");
-
-    max
+        .expect("Unable to run IntCode VMs")
 }
 
 /// runs intcode VMs with the given IDs in series and returns the output from the final one
-fn run_in_series(program: &Vec<i64>, ids: &[i64]) -> i64 {
+fn run_in_series(program: &[i64], ids: &[i64]) -> i64 {
     ids.iter().fold(0, |current, &id| {
-        let mut vm = IntCodeEmulator::new(program.clone());
+        let mut vm = IntCodeEmulator::new(program.to_vec());
         vm.stdin().push_back(id);
         vm.stdin().push_back(current);
 
         vm.execute();
 
-        let output = vm.stdout().pop_back().expect("No output produced");
-        output
+        vm.stdout().pop_back().expect("No output produced")
     })
 }
 
 /// runs intcode VMs with the given IDs in a feedback loop until none require any more input
 /// then returns the final result
-fn run_feedback_loop(program: &Vec<i64>, ids: &[i64]) -> i64 {
+fn run_feedback_loop(program: &[i64], ids: &[i64]) -> i64 {
     let mut waiting: VecDeque<IntCodeEmulator> = ids
         .iter()
         .map(|&id| {
-            let mut vm = IntCodeEmulator::new(program.clone());
+            let mut vm = IntCodeEmulator::new(program.to_vec());
             vm.stdin().push_back(id);
             vm
         })
