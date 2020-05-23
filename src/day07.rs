@@ -71,11 +71,11 @@ mod tests {
 
     #[test]
     fn day07_part1() {
-        assert_eq!(part1(), 272368);
+        assert_eq!(part1(), 272_368);
     }
 
     #[test]
     fn day07_part2() {
-        assert_eq!(part2(), 19741286);
+        assert_eq!(part2(), 19_741_286);
     }
 }

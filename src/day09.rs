@@ -30,7 +30,7 @@ mod tests {
 
     #[test]
     fn day09_part1() {
-        assert_eq!(part1(), 4006117640);
+        assert_eq!(part1(), 4_006_117_640);
     }
 
     #[test]
