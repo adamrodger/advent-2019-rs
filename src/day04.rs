@@ -2,15 +2,17 @@ const START: u32 = 347312;
 const END: u32 = 805915 + 1; // +1 so we can use exclusive ranges which are much more performant
 
 pub fn part1() -> usize {
-    (START..END).map(|n| digits(n))
-                .filter(|digits| is_in_order(digits) && has_multiple(digits))
-                .count()
+    (START..END)
+        .map(|n| digits(n))
+        .filter(|digits| is_in_order(digits) && has_multiple(digits))
+        .count()
 }
 
 pub fn part2() -> usize {
-    (START..END).map(|n| digits(n))
-                .filter(|digits| is_in_order(digits) && has_double(digits))
-                .count()
+    (START..END)
+        .map(|n| digits(n))
+        .filter(|digits| is_in_order(digits) && has_double(digits))
+        .count()
 }
 
 /// splits a number into its digits
@@ -54,11 +56,9 @@ fn has_double(digits: &[usize; 6]) -> bool {
     for i in 1..6 {
         if digits[i] == digits[i - 1] {
             consecutive += 1;
-        }
-        else if consecutive == 2 {
+        } else if consecutive == 2 {
             return true;
-        }
-        else {
+        } else {
             consecutive = 1;
         }
     }

@@ -3,20 +3,25 @@ use std::collections::{HashMap, HashSet};
 const INPUT: &str = include_str!("../input/2019/day6.txt");
 
 pub fn part1() -> usize {
-    let planets: HashMap<String, Planet> = INPUT.lines()
-                                                .map(Planet::new)
-                                                .map(|p| (p.id.clone(), p))
-                                                .collect();
+    let planets: HashMap<String, Planet> = INPUT
+        .lines()
+        .map(Planet::new)
+        .map(|p| (p.id.clone(), p))
+        .collect();
 
-    let total = planets.iter().map(|p| p.1.steps_to_root(&planets).len()).sum();
+    let total = planets
+        .iter()
+        .map(|p| p.1.steps_to_root(&planets).len())
+        .sum();
     total
 }
 
 pub fn part2() -> usize {
-    let planets: HashMap<String, Planet> = INPUT.lines()
-                                                .map(Planet::new)
-                                                .map(|p| (p.id.clone(), p))
-                                                .collect();
+    let planets: HashMap<String, Planet> = INPUT
+        .lines()
+        .map(Planet::new)
+        .map(|p| (p.id.clone(), p))
+        .collect();
 
     let you = planets.get("YOU").expect("Unable to find planet YOU");
     let santa = planets.get("SAN").expect("Unable to find planet SAN");
@@ -35,7 +40,7 @@ pub fn part2() -> usize {
 #[derive(Hash, Eq, PartialEq)]
 struct Planet {
     id: String,
-    orbiting: String
+    orbiting: String,
 }
 
 impl Planet {
@@ -43,7 +48,7 @@ impl Planet {
         let mut split = s.split(')');
         Planet {
             orbiting: split.next().expect("No parent planet found").to_owned(),
-            id: split.next().expect("No planet ID found").to_owned()
+            id: split.next().expect("No planet ID found").to_owned(),
         }
     }
 

@@ -4,13 +4,13 @@ use std::collections::VecDeque;
 enum StepResult {
     Continue,
     InputRequired,
-    Halted
+    Halted,
 }
 
 #[derive(Debug, PartialEq)]
 pub enum YieldReason {
     InputRequired,
-    Halted
+    Halted,
 }
 
 #[derive(Debug)]
@@ -19,7 +19,7 @@ pub struct IntCodeEmulator {
     pointer: usize,
     base: i64,
     stdin: VecDeque<i64>,
-    stdout: VecDeque<i64>
+    stdout: VecDeque<i64>,
 }
 
 impl IntCodeEmulator {
@@ -39,7 +39,11 @@ impl IntCodeEmulator {
     }
 
     pub fn parse_input(input: &str) -> Vec<i64> {
-        input.trim().split(',').map(|l| l.parse().expect("Unable to parse input")).collect()
+        input
+            .trim()
+            .split(',')
+            .map(|l| l.parse().expect("Unable to parse input"))
+            .collect()
     }
 
     pub fn ram(&self) -> &Vec<i64> {
@@ -59,7 +63,7 @@ impl IntCodeEmulator {
             match self.step() {
                 StepResult::Continue => continue,
                 StepResult::InputRequired => panic!("Input required but none received"),
-                StepResult::Halted => break
+                StepResult::Halted => break,
             }
         }
     }
@@ -69,7 +73,7 @@ impl IntCodeEmulator {
             match self.step() {
                 StepResult::Continue => continue,
                 StepResult::InputRequired => return YieldReason::InputRequired,
-                StepResult::Halted => return YieldReason::Halted
+                StepResult::Halted => return YieldReason::Halted,
             }
         }
     }
@@ -81,54 +85,74 @@ impl IntCodeEmulator {
         let steps = instruction.steps();
 
         match instruction {
-            Instruction::Add(left, right, dest) => {
-                dest.write(program, *base, left.read(program, *base) + right.read(program, *base))
-            },
+            Instruction::Add(left, right, dest) => dest.write(
+                program,
+                *base,
+                left.read(program, *base) + right.read(program, *base),
+            ),
 
-            Instruction::Multiply(left, right, dest) => {
-                dest.write(program, *base, left.read(program, *base) * right.read(program, *base))
-            },
+            Instruction::Multiply(left, right, dest) => dest.write(
+                program,
+                *base,
+                left.read(program, *base) * right.read(program, *base),
+            ),
 
             Instruction::Input(dest) => {
                 let input = match self.stdin.pop_front() {
                     None => return StepResult::InputRequired,
-                    Some(v) => v
+                    Some(v) => v,
                 };
 
                 dest.write(program, *base, input);
-            },
+            }
 
             Instruction::Output(src) => {
                 self.stdout.push_back(src.read(program, *base));
-            },
+            }
 
             Instruction::JumpTrue(condition, dest) => {
                 if condition.read(program, *base) != 0 {
                     self.pointer = dest.read(program, *base) as usize;
                     return StepResult::Continue;
                 }
-            },
+            }
 
             Instruction::JumpFalse(condition, dest) => {
                 if condition.read(program, *base) == 0 {
                     self.pointer = dest.read(program, *base) as usize;
                     return StepResult::Continue;
                 }
-            },
+            }
 
             Instruction::LessThan(left, right, dest) => {
-                dest.write(program, *base, if left.read(program, *base) < right.read(program, *base) { 1 } else { 0 });
-            },
+                dest.write(
+                    program,
+                    *base,
+                    if left.read(program, *base) < right.read(program, *base) {
+                        1
+                    } else {
+                        0
+                    },
+                );
+            }
 
             Instruction::Equals(left, right, dest) => {
-                dest.write(program, *base, if left.read(program, *base) == right.read(program, *base) { 1 } else { 0 });
-            },
+                dest.write(
+                    program,
+                    *base,
+                    if left.read(program, *base) == right.read(program, *base) {
+                        1
+                    } else {
+                        0
+                    },
+                );
+            }
 
             Instruction::AdjustBase(offset) => {
                 *base += offset.read(program, *base);
             }
 
-            Instruction::Halt => return StepResult::Halted
+            Instruction::Halt => return StepResult::Halted,
         }
 
         self.pointer += steps;
@@ -147,7 +171,7 @@ enum Instruction {
     LessThan(ReadValue, ReadValue, WriteValue),
     Equals(ReadValue, ReadValue, WriteValue),
     AdjustBase(ReadValue),
-    Halt
+    Halt,
 }
 
 impl Instruction {
@@ -169,19 +193,15 @@ impl Instruction {
                 ReadValue::new(program[pointer + 2], mode2),
                 WriteValue::new(program[pointer + 3], mode3),
             ),
-            3 => Instruction::Input(
-                WriteValue::new(program[pointer + 1], mode1)
-            ),
-            4 => Instruction::Output(
-                ReadValue::new(program[pointer + 1], mode1)
-            ),
+            3 => Instruction::Input(WriteValue::new(program[pointer + 1], mode1)),
+            4 => Instruction::Output(ReadValue::new(program[pointer + 1], mode1)),
             5 => Instruction::JumpTrue(
                 ReadValue::new(program[pointer + 1], mode1),
-                ReadValue::new(program[pointer + 2], mode2)
+                ReadValue::new(program[pointer + 2], mode2),
             ),
             6 => Instruction::JumpFalse(
                 ReadValue::new(program[pointer + 1], mode1),
-                ReadValue::new(program[pointer + 2], mode2)
+                ReadValue::new(program[pointer + 2], mode2),
             ),
             7 => Instruction::LessThan(
                 ReadValue::new(program[pointer + 1], mode1),
@@ -193,11 +213,9 @@ impl Instruction {
                 ReadValue::new(program[pointer + 2], mode2),
                 WriteValue::new(program[pointer + 3], mode3),
             ),
-            9 => Instruction::AdjustBase(
-                ReadValue::new(program[pointer + 1], mode1)
-            ),
+            9 => Instruction::AdjustBase(ReadValue::new(program[pointer + 1], mode1)),
             99 => Instruction::Halt,
-            _ => panic!("Unknown opcode {} at pointer {}", opcode, pointer)
+            _ => panic!("Unknown opcode {} at pointer {}", opcode, pointer),
         };
 
         instruction
@@ -205,16 +223,16 @@ impl Instruction {
 
     fn steps(&self) -> usize {
         match self {
-            Instruction::Add(..)        => 4,
-            Instruction::Multiply(..)   => 4,
-            Instruction::Input(..)      => 2,
-            Instruction::Output(..)     => 2,
-            Instruction::JumpTrue(..)   => 3,
-            Instruction::JumpFalse(..)  => 3,
-            Instruction::LessThan(..)   => 4,
-            Instruction::Equals(..)     => 4,
+            Instruction::Add(..) => 4,
+            Instruction::Multiply(..) => 4,
+            Instruction::Input(..) => 2,
+            Instruction::Output(..) => 2,
+            Instruction::JumpTrue(..) => 3,
+            Instruction::JumpFalse(..) => 3,
+            Instruction::LessThan(..) => 4,
+            Instruction::Equals(..) => 4,
             Instruction::AdjustBase(..) => 2,
-            Instruction::Halt           => 0
+            Instruction::Halt => 0,
         }
     }
 }
@@ -223,7 +241,7 @@ impl Instruction {
 enum ReadValue {
     Position(i64),
     Immediate(i64),
-    Relative(i64)
+    Relative(i64),
 }
 
 impl ReadValue {
@@ -232,7 +250,7 @@ impl ReadValue {
             0 => ReadValue::Position(value),
             1 => ReadValue::Immediate(value),
             2 => ReadValue::Relative(value),
-            _ => panic!("Unsupported read mode: {:?}", mode)
+            _ => panic!("Unsupported read mode: {:?}", mode),
         }
     }
 
@@ -250,7 +268,7 @@ impl ReadValue {
 #[derive(Debug)]
 enum WriteValue {
     Position(i64),
-    Relative(i64)
+    Relative(i64),
 }
 
 impl WriteValue {
@@ -258,14 +276,14 @@ impl WriteValue {
         match mode {
             0 => WriteValue::Position(value),
             2 => WriteValue::Relative(value),
-            _ => panic!("Unsupported write mode: {:?}", mode)
+            _ => panic!("Unsupported write mode: {:?}", mode),
         }
     }
 
     fn write(&self, program: &mut Vec<i64>, base: i64, value: i64) {
         let position: usize = match *self {
             WriteValue::Position(position) => position as usize,
-            WriteValue::Relative(position) => (position + base) as usize
+            WriteValue::Relative(position) => (position + base) as usize,
         };
 
         if position >= program.len() {

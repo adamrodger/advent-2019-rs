@@ -3,7 +3,11 @@ use crate::intcode::IntCodeEmulator;
 const INPUT: &str = include_str!("../input/2019/day2.txt");
 
 pub fn parse_input() -> Vec<i64> {
-    INPUT.trim().split(',').map(|l| l.parse().expect("Unable to parse input")).collect()
+    INPUT
+        .trim()
+        .split(',')
+        .map(|l| l.parse().expect("Unable to parse input"))
+        .collect()
 }
 
 pub fn part1() -> i64 {

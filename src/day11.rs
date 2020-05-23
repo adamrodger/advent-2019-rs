@@ -7,7 +7,7 @@ const INPUT: &str = include_str!("../input/2019/day11.txt");
 #[derive(PartialEq)]
 enum Colour {
     Black = 0,
-    White = 1
+    White = 1,
 }
 
 pub fn part1() -> usize {
@@ -17,7 +17,11 @@ pub fn part1() -> usize {
 
 pub fn part2() -> String {
     let colours = run_program(Colour::White);
-    let painted = colours.iter().filter(|p| p.1 == &Colour::White).map(|p| p.0).collect::<Vec<&Point2D>>();
+    let painted = colours
+        .iter()
+        .filter(|p| p.1 == &Colour::White)
+        .map(|p| p.0)
+        .collect::<Vec<&Point2D>>();
 
     let width: usize = painted.iter().map(|p| p.x as usize).max().unwrap() + 1 + 1; // add one for line breaks
     let height: usize = painted.iter().map(|p| p.y as usize).max().unwrap();
@@ -63,7 +67,7 @@ fn run_program(starting_colour: Colour) -> HashMap<Point2D, Colour> {
         let paint = match paint {
             0 => Colour::Black,
             1 => Colour::White,
-            _ => panic!("Unexpected colour: {}", paint)
+            _ => panic!("Unexpected colour: {}", paint),
         };
 
         colours.insert(position, paint);
@@ -73,7 +77,7 @@ fn run_program(starting_colour: Colour) -> HashMap<Point2D, Colour> {
         let direction = match direction {
             0 => Direction::Left,
             1 => Direction::Right,
-            _ => panic!("Unexpected direction: {}", direction)
+            _ => panic!("Unexpected direction: {}", direction),
         };
 
         bearing = bearing.turn(&direction);
@@ -94,12 +98,14 @@ mod tests {
 
     #[test]
     fn day11_part2() {
-        let expected = vec!["  ██  ███  ████ █  █ ████  ██  ████  ██ ",
-                            " █  █ █  █ █    █ █     █ █  █ █    █  █",
-                            " █  █ ███  ███  ██     █  █    ███  █   ",
-                            " ████ █  █ █    █ █   █   █ ██ █    █ ██",
-                            " █  █ █  █ █    █ █  █    █  █ █    █  █",
-                            " █  █ ███  ████ █  █ ████  ███ █     ███"];
+        let expected = vec![
+            "  ██  ███  ████ █  █ ████  ██  ████  ██ ",
+            " █  █ █  █ █    █ █     █ █  █ █    █  █",
+            " █  █ ███  ███  ██     █  █    ███  █   ",
+            " ████ █  █ █    █ █   █   █ ██ █    █ ██",
+            " █  █ █  █ █    █ █  █    █  █ █    █  █",
+            " █  █ ███  ████ █  █ ████  ███ █     ███",
+        ];
 
         assert_eq!(part2(), expected.join("\n"));
     }

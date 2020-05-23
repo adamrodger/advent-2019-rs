@@ -1,8 +1,8 @@
+use crate::points::Point2D;
 use std::collections::HashSet;
 use std::error::Error;
 use std::iter::FromIterator;
 use std::str::FromStr;
-use crate::points::Point2D;
 
 const INPUT: &str = include_str!("../input/2019/day3.txt");
 
@@ -16,10 +16,11 @@ pub fn part1() -> i32 {
 
     let intersections: HashSet<&&Point2D> = locations_one.intersection(&locations_two).collect();
 
-    let closest: i32 = intersections.iter()
-                                    .map(|i| i.manhattan_distance())
-                                    .min()
-                                    .expect("No intersections found");
+    let closest: i32 = intersections
+        .iter()
+        .map(|i| i.manhattan_distance())
+        .min()
+        .expect("No intersections found");
     closest
 }
 
@@ -33,10 +34,16 @@ pub fn part2() -> usize {
 
     let intersections: HashSet<&&Point2D> = locations_one.intersection(&locations_two).collect();
 
-    let closest = intersections.iter()
-                               .map(|i| wire_one.iter().position(|x| x == **i).unwrap() + 1 + wire_two.iter().position(|x| x == **i).unwrap() + 1)
-                               .min()
-                               .expect("No intersections found");
+    let closest = intersections
+        .iter()
+        .map(|i| {
+            wire_one.iter().position(|x| x == **i).unwrap()
+                + 1
+                + wire_two.iter().position(|x| x == **i).unwrap()
+                + 1
+        })
+        .min()
+        .expect("No intersections found");
     closest
 }
 
@@ -45,7 +52,7 @@ fn parse_input() -> Vec<Path> {
 }
 
 struct Path {
-    locations: Vec<Point2D>
+    locations: Vec<Point2D>,
 }
 
 impl FromStr for Path {
@@ -75,7 +82,7 @@ impl Path {
 
 struct Move {
     direction: Direction,
-    steps: u32
+    steps: u32,
 }
 
 impl FromStr for Move {
@@ -93,7 +100,7 @@ enum Direction {
     Up,
     Down,
     Left,
-    Right
+    Right,
 }
 
 impl Direction {
@@ -102,7 +109,7 @@ impl Direction {
             Direction::Up => Point2D::new(0, -1),
             Direction::Down => Point2D::new(0, 1),
             Direction::Left => Point2D::new(-1, 0),
-            Direction::Right => Point2D::new(1, 0)
+            Direction::Right => Point2D::new(1, 0),
         }
     }
 }
@@ -116,7 +123,7 @@ impl FromStr for Direction {
             "D" => Ok(Direction::Down),
             "L" => Ok(Direction::Left),
             "R" => Ok(Direction::Right),
-            _ => Err(format!("Unable to parse direction {}", s))
+            _ => Err(format!("Unable to parse direction {}", s)),
         }
     }
 }

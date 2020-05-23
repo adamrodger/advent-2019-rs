@@ -8,7 +8,11 @@ pub fn part1() -> i64 {
 
     vm.execute();
 
-    let result = vm.stdout().iter().last().expect("Expected output but received none");
+    let result = vm
+        .stdout()
+        .iter()
+        .last()
+        .expect("Expected output but received none");
     *result
 }
 
@@ -18,7 +22,11 @@ pub fn part2() -> i64 {
 
     vm.execute();
 
-    let result = vm.stdout().iter().last().expect("Expected output but received none");
+    let result = vm
+        .stdout()
+        .iter()
+        .last()
+        .expect("Expected output but received none");
     *result
 }
 

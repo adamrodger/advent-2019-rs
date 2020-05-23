@@ -5,7 +5,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign};
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
 pub struct Point2D {
     pub x: i32,
-    pub y: i32
+    pub y: i32,
 }
 
 impl Point2D {
@@ -23,10 +23,22 @@ impl Point2D {
 
     pub fn move_bearing(&self, bearing: &Bearing) -> Self {
         match bearing {
-            Bearing::North => Self { x: self.x, y: self.y - 1 },
-            Bearing::South => Self { x: self.x, y: self.y + 1 },
-            Bearing::East => Self { x: self.x + 1, y: self.y },
-            Bearing::West => Self { x: self.x - 1, y: self.y },
+            Bearing::North => Self {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Bearing::South => Self {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Bearing::East => Self {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Bearing::West => Self {
+                x: self.x - 1,
+                y: self.y,
+            },
         }
     }
 }
